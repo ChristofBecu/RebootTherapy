@@ -6,6 +6,8 @@ exports.handler = async function(event, context) {
     // Path to content directory relative to the function
     const contentDir = path.join(__dirname, '..', 'src', 'content');
     
+    console.log('Content directory path:', contentDir);
+    
     // Read the directory
     const files = fs.readdirSync(contentDir);
     

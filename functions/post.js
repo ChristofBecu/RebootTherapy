@@ -3,7 +3,11 @@ const path = require('path');
 
 exports.handler = async function(event, context) {
   // Get post name from URL path
-  const postName = event.path.split('/').pop();
+  const pathParts = event.path.split('/');
+  const postName = pathParts[pathParts.length - 1];
+  
+  console.log('Request path:', event.path);
+  console.log('Extracted post name:', postName);
   
   if (!postName) {
     return {

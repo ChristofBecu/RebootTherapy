@@ -64,9 +64,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadMarkdown(post) {
         try {
-            const response = await fetch(`content/${post}.md`);
+            const response = await fetch(`/api/post/${post}`);
             if (!response.ok) {
-                throw new Error(`Failed to load ${post}.md: ${response.statusText}`);
+                throw new Error(`Failed to load ${post}: ${response.statusText}`);
             }
             const text = await response.text();
             return text;
