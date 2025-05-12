@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Fetch post names from the server
     async function fetchPostNames() {
         try {
-            const response = await fetch('/api/posts');
+            const response = await fetch(`/content/${post}.md`);
             if (!response.ok) {
                 throw new Error(`Failed to fetch posts: ${response.statusText}`);
             }
