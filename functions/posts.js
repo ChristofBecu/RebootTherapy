@@ -3,13 +3,39 @@ const path = require('path');
 
 exports.handler = async function(event, context) {
   try {
-    // Path to content directory relative to the function
-    const contentDir = path.join(__dirname, '..', 'src', 'content');
+    // Try multiple possible content directory locations
+    const possibleDirs = [
+      // Netlify environment paths
+      '/var/task/src/content',
+      '/var/task/content',
+      process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/src/content` : null,
+      process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/content` : null,
+      // Local development path
+      path.join(__dirname, '..', 'src', 'content'),
+      path.join(__dirname, '..', 'content')
+    ].filter(Boolean); // Remove null entries
     
-    console.log('Content directory path:', contentDir);
+    let files = [];
+    let contentDir;
+    let foundDir = false;
     
-    // Read the directory
-    const files = fs.readdirSync(contentDir);
+    // Try each directory until we find one that works
+    for (const dir of possibleDirs) {
+      try {
+        console.log(`Trying directory: ${dir}`);
+        files = fs.readdirSync(dir);
+        contentDir = dir;
+        foundDir = true;
+        console.log(`Successfully found content in: ${dir}`);
+        break;
+      } catch (error) {
+        console.log(`Directory ${dir} not accessible: ${error.message}`);
+      }
+    }
+    
+    if (!foundDir) {
+      throw new Error('Could not find content directory in any of the expected locations');
+    }
     
     // Filter and process Markdown files
     const posts = files

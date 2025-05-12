@@ -11,3 +11,9 @@
   from = "/content/*"
   to = "/content/:splat"
   status = 200
+  
+# Additional redirect to allow access to blog content
+[[redirects]]
+  from = "/.netlify/functions/post/*"
+  to = "/.netlify/functions/post/:splat"
+  status = 200
