@@ -1,0 +1,24 @@
+{
+  "name": "my-blog-website",
+  "version": "1.0.0",
+  "description": "A simple blog website built using markdown for content.",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "netlify dev",
+    "build": "echo 'Build step not defined'"
+  },
+  "dependencies": {
+    "marked": "^2.1.3"
+  },
+  "keywords": [
+    "blog",
+    "markdown",
+    "website"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "netlify-cli": "^21.2.1"
+  }
+}

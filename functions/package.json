@@ -1,0 +1,10 @@
+{
+  "name": "blog-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions for blog website",
+  "main": "posts.js",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "path": "^0.12.7"
+  }
+}
