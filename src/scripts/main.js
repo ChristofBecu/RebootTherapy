@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function fetchPostNames() {
         try {
             const response = await fetch(`/content/${post}.md`);
+            console.log('Response:', response); // Log the response object
             if (!response.ok) {
                 throw new Error(`Failed to fetch posts: ${response.statusText}`);
             }
