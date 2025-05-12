@@ -77,10 +77,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function renderPost(post) {
-        console.log(`Rendering post: ${post}`);
         const markdown = await loadMarkdown(post);
         const html = marked.parse(markdown); // Assuming marked.js is included for markdown parsing
-        console.log(`Rendered HTML: ${html}`);
         postContainer.innerHTML = `<h2>${post}</h2>${html}`;
     }
 
