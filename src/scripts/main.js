@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadMarkdown(post) {
         try {
-            const response = await fetch(`/content/${post}.md`);
+            const response = await fetch(`/content/${post}.md`); // Adjust the path as needed
             if (!response.ok) {
                 throw new Error(`Failed to load ${post}.md: ${response.statusText}`);
             }
