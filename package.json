@@ -1,7 +1,7 @@
 {
-  "name": "my-blog-website",
+  "name": "reboot-therapy",
   "version": "1.0.0",
-  "description": "A simple blog website built using markdown for content.",
+  "description": "A chronicle of my Arch Linux escapades—fixes, configs, crashes, and the occasional existential crisis. Because sometimes, turning it off and on again is cheaper than actual therapy.",
   "main": "src/index.html",
   "scripts": {
     "start": "netlify dev",
