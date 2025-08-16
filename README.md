@@ -29,22 +29,26 @@ my-blog-website
 ## Setup Instructions
 
 1. **Clone the repository**:
-   ```
+
+   ```bash
    git clone <repository-url>
    cd my-blog-website
    ```
 
 2. **Install dependencies**:
-   ```
+
+   ```bash
    npm install
    ```
 
 3. **Run the project**:
-   ```
+
+```bash
    npm start
    ```
+
    This will start Netlify dev, which serves both your static files and Netlify Functions locally.
-   Then open your browser and navigate to the URL shown in the terminal (usually http://localhost:8888).
+   Then open your browser and navigate to the URL shown in the terminal (usually <http://localhost:8888>).
 
 ## Deployment to Netlify
 
