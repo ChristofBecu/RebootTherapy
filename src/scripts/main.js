@@ -22,10 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Fetch post names from the server
     async function fetchPostNames() {
         try {
-            const response = await fetch(`/content/${post}.md`);
-            console.log('Response:', response); // Log the response object
+            const response = await fetch('/api/posts'); // Use Netlify Function
             if (!response.ok) {
-                throw new Error(`Failed to fetch posts: ${response.statusText}`);
+                throw new Error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
             }
             const postNames = await response.json();
             return postNames;
@@ -65,9 +64,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadMarkdown(post) {
         try {
-            const response = await fetch(`/content/${post}.md`); // Adjust the path as needed
+            const response = await fetch(`/api/post/${encodeURIComponent(post)}`); // Use Netlify Function
             if (!response.ok) {
-                throw new Error(`Failed to load ${post}.md: ${response.statusText}`);
+                throw new Error(`Failed to load ${post}: ${response.status} ${response.statusText}`);
             }
             const text = await response.text();
             return text;
