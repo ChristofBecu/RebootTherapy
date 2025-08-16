@@ -1,7 +1,9 @@
 
 # i3lock and the Password That Never Was
 
-There’s nothing quite like confidently locking your screen, walking away, and coming back only to discover that your password doesn’t work. No typos. No caps lock. Just rejection. Cold, emotionless, *rootless* rejection.
+There’s nothing quite like confidently locking your screen, walking away, and coming back only to discover that your password doesn’t work.
+
+No typos. No caps lock. Just rejection. Cold, emotionless, *rootless* rejection.
 
 ## The Symptom
 
@@ -29,7 +31,9 @@ After hours of messing around, I checked the permissions on `/usr/bin/i3lock`:
 ls -l /usr/bin/i3lock
 ```
 
-It didn’t have the **setuid** bit. i3lock needs to run as root *briefly* to verify your password. Without the correct permissions, it's like asking a bouncer to let you in without a guest list.
+It didn’t have the **setuid** bit. i3lock needs to run as root *briefly* to verify your password.
+
+Without the correct permissions, it's like asking a bouncer to let you in without a guest list.
 
 ## The Fix
 
