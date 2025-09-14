@@ -1,6 +1,19 @@
 [build]
-  publish = "src"
+  publish = "."
   functions = "functions"
+
+[build.processing]
+  skip_processing = false
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+
+# Include all files in deployment
+[build.environment]
+  NODE_VERSION = "18"
 
 [[redirects]]
   from = "/api/*"
@@ -17,4 +30,3 @@
   [headers.values]
     Content-Type = "text/plain"
 
-    
