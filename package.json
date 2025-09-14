@@ -5,7 +5,8 @@
   "main": "src/index.html",
   "scripts": {
     "start": "netlify dev",
-    "build": "echo 'Build step not defined'"
+    "build": "echo 'Build step not defined'",
+    "status": "netlify status"
   },
   "dependencies": {
     "marked": "^16.1.2"
