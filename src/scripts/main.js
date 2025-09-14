@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Fetch post names from the server
     async function fetchPostNames() {
         try {
-            const response = await fetch('/api/posts'); // Use Netlify Function
+            const response = await fetch('.netlify/functions/posts'); // Use Netlify Function
             if (!response.ok) {
                 throw new Error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
             }
