@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadMarkdown(post) {
         try {
-            const response = await fetch(`/api/post/${encodeURIComponent(post)}`); // Use Netlify Function
+            const response = await fetch(`/.netlify/functions/post/${encodeURIComponent(post)}`); // Use Netlify Function
             if (!response.ok) {
                 throw new Error(`Failed to load ${post}: ${response.status} ${response.statusText}`);
             }
