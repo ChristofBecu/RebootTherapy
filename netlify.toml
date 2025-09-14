@@ -11,6 +11,9 @@
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
 
+[functions]
+  included_files = ["src/content/*.md"]
+
 # Include all files in deployment
 [build.environment]
   NODE_VERSION = "18"

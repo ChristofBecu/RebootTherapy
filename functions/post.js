@@ -22,7 +22,6 @@ exports.handler = async function(event, context) {
       // Netlify environment paths
       `/var/task/src/content/${postName}.md`,
       `/var/task/content/${postName}.md`,
-      `../../src/content/${postName}.md`,
       process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/src/content/${postName}.md` : null,
       process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/content/${postName}.md` : null,
       // Local development path

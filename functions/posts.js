@@ -8,7 +8,6 @@ exports.handler = async function(event, context) {
       // In Netlify deployment, your repo root is at /var/task/
       '/var/task/src/content',
       '/var/task/content',
-      '../../src/content',
       // Fallback for local development
       path.join(__dirname, '..', 'src', 'content'),
       path.join(__dirname, '..', 'content'),
