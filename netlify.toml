@@ -11,3 +11,8 @@
   from = "/content/*"
   to = "/content/:splat"
   status = 200
+
+[[headers]]
+  for = "/content/*"
+  [headers.values]
+    Content-Type = "text/plain"
