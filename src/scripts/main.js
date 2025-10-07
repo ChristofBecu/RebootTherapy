@@ -141,8 +141,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const html = marked.parse(markdown, { renderer }); // Parse with custom renderer
         postContainer.innerHTML = html; // Don't add extra heading since markdown has the title
         
-        // Scroll to top of the page when post loads
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Scroll the main element (which has overflow-y: auto) to top
+        const mainElement = document.querySelector('main');
+        if (mainElement) {
+            mainElement.scrollTop = 0;
+        }
     }
 
     // Build the navigation dynamically
