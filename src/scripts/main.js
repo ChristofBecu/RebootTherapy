@@ -107,7 +107,38 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function renderPost(post) {
         const markdown = await loadMarkdown(post);
-        const html = marked.parse(markdown); // Assuming marked.js is included for markdown parsing
+        
+        // Configure marked renderer to handle relative image paths
+        const renderer = new marked.Renderer();
+        const originalImage = renderer.image.bind(renderer);
+        
+        renderer.image = function(token) {
+            // In newer marked.js, image receives a token object
+            const href = typeof token === 'string' ? token : token.href;
+            const title = typeof token === 'object' ? token.title : arguments[1];
+            const text = typeof token === 'object' ? token.text : arguments[2];
+            
+            console.log('Original image href:', href);
+            
+            // Transform relative paths to use the image function
+            let newHref = href;
+            if (href && href.startsWith('./')) {
+                const imageName = href.substring(2); // Remove './'
+                newHref = `/.netlify/functions/image/${encodeURIComponent(post)}/${encodeURIComponent(imageName)}`;
+                console.log('Transformed to:', newHref);
+            }
+            
+            // Update token if it's an object, otherwise pass parameters
+            if (typeof token === 'object') {
+                token.href = newHref;
+                return originalImage(token);
+            } else {
+                return originalImage(newHref, title, text);
+            }
+        };
+        
+        const html = marked.parse(markdown, { renderer }); // Parse with custom renderer
+        console.log('Rendered HTML contains image:', html.includes('<img'));
         postContainer.innerHTML = `<h2>${post}</h2>${html}`;
     }
 

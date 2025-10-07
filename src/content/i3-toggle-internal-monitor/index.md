@@ -138,3 +138,4 @@ A 14-line script + one keybinding = frictionless focus. Internal screen disappea
 
 Until next hack,
 *Reboot Therapy unplugs itself.*
+<!-- Example: To add an image here, place it in this directory and use:\n![Screenshot](./screenshot.png)\n-->

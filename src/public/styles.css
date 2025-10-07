@@ -243,3 +243,34 @@ body.dark-mode #toggle-nav {
 body.dark-mode #toggle-nav:hover {
     color: #6db3f2;
 }
+
+/* Image styling */
+main img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+}
+
+body.dark-mode main img {
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+/* Figure and caption support */
+main figure {
+    margin: 20px 0;
+    text-align: center;
+}
+
+main figcaption {
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 8px;
+}
+
+body.dark-mode main figcaption {
+    color: #999;
+}
