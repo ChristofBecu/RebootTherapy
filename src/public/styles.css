@@ -274,3 +274,64 @@ main figcaption {
 body.dark-mode main figcaption {
     color: #999;
 }
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+    /* Adjust header padding to make room for buttons */
+    header {
+        padding: 60px 0 10px 0; /* Add top padding to avoid button overlap */
+    }
+    
+    /* Ensure buttons stay visible above header */
+    #toggle-nav,
+    .theme-toggle {
+        top: 10px; /* Move buttons closer to the top edge */
+    }
+    
+    /* Stack buttons vertically or adjust spacing if needed */
+    .theme-toggle {
+        right: 60px; /* Adjust spacing between buttons */
+    }
+    
+    /* Reduce main content padding on mobile */
+    main {
+        padding: 20px;
+    }
+    
+    /* Make navigation full width when visible on mobile */
+    .nav-container {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Extra small mobile devices */
+@media screen and (max-width: 480px) {
+    header {
+        padding: 70px 10px 10px 10px;
+    }
+    
+    header h1 {
+        font-size: 1.5rem; /* Smaller title on very small screens */
+    }
+    
+    #toggle-nav {
+        right: 10px;
+        top: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .theme-toggle {
+        right: 55px;
+        top: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    main {
+        padding: 15px;
+    }
+}
