@@ -118,14 +118,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             const title = typeof token === 'object' ? token.title : arguments[1];
             const text = typeof token === 'object' ? token.text : arguments[2];
             
-            console.log('Original image href:', href);
-            
             // Transform relative paths to use the image function
             let newHref = href;
             if (href && href.startsWith('./')) {
                 const imageName = href.substring(2); // Remove './'
                 newHref = `/.netlify/functions/image/${encodeURIComponent(post)}/${encodeURIComponent(imageName)}`;
-                console.log('Transformed to:', newHref);
             }
             
             // Update token if it's an object, otherwise pass parameters
@@ -138,7 +135,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         
         const html = marked.parse(markdown, { renderer }); // Parse with custom renderer
-        console.log('Rendered HTML contains image:', html.includes('<img'));
         postContainer.innerHTML = `<h2>${post}</h2>${html}`;
     }
 
