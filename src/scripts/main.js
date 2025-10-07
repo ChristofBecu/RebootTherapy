@@ -30,17 +30,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sidebar = document.querySelector('.nav-container'); // Select the navigation menu
     const toggleNavButton = document.getElementById('toggle-nav'); // Select the toggle button
 
-    // Check if we're on mobile (viewport width <= 768px)
-    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    // Function to check if we're on mobile
+    const isMobileView = () => window.matchMedia('(max-width: 768px)').matches;
     
-    // On desktop, show menu by default. On mobile, hide it by default.
-    if (isMobile) {
-        sidebar.classList.add('hidden');
-        toggleNavButton.innerHTML = '☰';
-    } else {
-        sidebar.classList.remove('hidden');
-        toggleNavButton.innerHTML = '✕';
+    // Initialize menu state based on device
+    function initializeMenuState() {
+        if (isMobileView()) {
+            sidebar.classList.add('hidden');
+            toggleNavButton.innerHTML = '☰';
+        } else {
+            sidebar.classList.remove('hidden');
+            toggleNavButton.innerHTML = '✕';
+        }
     }
+    
+    initializeMenuState();
 
     // Add event listener to toggle the navigation menu
     toggleNavButton.addEventListener('click', () => {
@@ -90,8 +94,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 renderPost(post);
                 
                 // Close the menu on mobile after selecting a post
-                sidebar.classList.add('hidden');
-                toggleNavButton.innerHTML = '☰';
+                if (isMobileView()) {
+                    sidebar.classList.add('hidden');
+                    toggleNavButton.innerHTML = '☰';
+                }
             }
         });
 
