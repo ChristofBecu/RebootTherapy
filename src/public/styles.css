@@ -293,10 +293,29 @@ body.dark-mode main figcaption {
         padding: 20px;
     }
     
-    /* Make navigation full width when visible on mobile */
+    /* Make navigation overlay on mobile */
     .nav-container {
-        width: 100%;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 80%;
         max-width: 300px;
+        height: 100vh;
+        background-color: #ffffff;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        overflow-y: auto;
+    }
+    
+    /* Dark mode navigation background */
+    body.dark-mode .nav-container {
+        background-color: #1a1a1a;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Add padding to sidebar content on mobile */
+    .sidebar {
+        padding: 20px;
     }
 }
 
