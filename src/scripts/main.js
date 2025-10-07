@@ -30,11 +30,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const sidebar = document.querySelector('.nav-container'); // Select the navigation menu
     const toggleNavButton = document.getElementById('toggle-nav'); // Select the toggle button
 
-    // Ensure the navigation menu is visible on startup
-    sidebar.classList.remove('hidden');
-
-    // Update button text to use icons - show X since menu is visible
-    toggleNavButton.innerHTML = '✕';
+    // Check if we're on mobile (viewport width <= 768px)
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    
+    // On desktop, show menu by default. On mobile, hide it by default.
+    if (isMobile) {
+        sidebar.classList.add('hidden');
+        toggleNavButton.innerHTML = '☰';
+    } else {
+        sidebar.classList.remove('hidden');
+        toggleNavButton.innerHTML = '✕';
+    }
 
     // Add event listener to toggle the navigation menu
     toggleNavButton.addEventListener('click', () => {
