@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const listItem = document.createElement('li');
             const link = document.createElement('a');
             link.href = '#';
-            link.setAttribute('data-post', post.name); // Use the name property
-            link.textContent = post.name.replace('post', 'Post '); // Format the name (e.g., "post1" -> "Post 1")
+            link.setAttribute('data-post', post.name); // Use the name property for the URL
+            link.textContent = post.title; // Display the title
             listItem.appendChild(link);
             navList.appendChild(listItem);
         });
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
         
         const html = marked.parse(markdown, { renderer }); // Parse with custom renderer
-        postContainer.innerHTML = `<h2>${post}</h2>${html}`;
+        postContainer.innerHTML = html; // Don't add extra heading since markdown has the title
     }
 
     // Build the navigation dynamically

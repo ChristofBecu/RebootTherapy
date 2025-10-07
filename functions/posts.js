@@ -75,10 +75,15 @@ exports.handler = async function(event, context) {
           const dateMatch = content.match(/^---\s*[\r\n]+date:\s*(.+?)[\r\n]+---/);
           const date = dateMatch ? new Date(dateMatch[1].trim()) : new Date();
 
-          console.log(`Post: ${dirName}, Date extracted: ${dateMatch ? dateMatch[1].trim() : 'none'}, ISO: ${date.toISOString()}`);
+          // Extract title from the first H1 heading (# Title)
+          const titleMatch = content.match(/^#\s+(.+)$/m);
+          const title = titleMatch ? titleMatch[1].trim() : dirName;
+
+          console.log(`Post: ${dirName}, Date extracted: ${dateMatch ? dateMatch[1].trim() : 'none'}, ISO: ${date.toISOString()}, Title: ${title}`);
 
           return {
             name: dirName,
+            title: title,
             createdAt: date.toISOString(),
           };
         } catch (error) {
