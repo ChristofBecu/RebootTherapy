@@ -79,6 +79,7 @@ body.dark-mode #toggle-nav:hover {
     list-style: none;
     padding: 0;
     margin: 0;
+    padding-left: 0; /* Remove default left padding */
 }
 
 .sidebar ul li {
@@ -315,8 +316,13 @@ body.dark-mode main figcaption {
     
     /* Add padding to sidebar content on mobile */
     .sidebar {
-        padding: 20px;
+        padding: 10px 15px;
         padding-top: 60px; /* Extra top padding to avoid buttons */
+    }
+    
+    /* Ensure no extra left padding on ul */
+    .sidebar ul {
+        padding-left: 0;
     }
 }
 
