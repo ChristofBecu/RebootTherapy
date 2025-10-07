@@ -41,6 +41,8 @@ end
 
 Result: prompt latency in that directory dropped to “instant” again, because all the Git introspection code below this block simply never runs there.
 
+![Screenshot showing the fish prompt performance improvement](./screenshot.png)
+
 ### Why It Works
 
 Fish renders the right prompt on every new command line. By returning early:

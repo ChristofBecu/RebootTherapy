@@ -17,16 +17,16 @@ exports.handler = async function(event, context) {
   }
   
   try {
-    // Try multiple possible content file locations
+    // Try multiple possible content file locations (now reading from directories)
     const possiblePaths = [
       // Netlify environment paths
-      `/var/task/src/content/${postName}.md`,
-      `/var/task/content/${postName}.md`,
-      process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/src/content/${postName}.md` : null,
-      process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/content/${postName}.md` : null,
+      `/var/task/src/content/${postName}/index.md`,
+      `/var/task/content/${postName}/index.md`,
+      process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/src/content/${postName}/index.md` : null,
+      process.env.LAMBDA_TASK_ROOT ? `${process.env.LAMBDA_TASK_ROOT}/content/${postName}/index.md` : null,
       // Local development path
-      path.join(__dirname, '..', 'src', 'content', `${postName}.md`),
-      path.join(__dirname, '..', 'content', `${postName}.md`)
+      path.join(__dirname, '..', 'src', 'content', postName, 'index.md'),
+      path.join(__dirname, '..', 'content', postName, 'index.md')
     ].filter(Boolean); // Remove null entries
     
     let content;

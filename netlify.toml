@@ -12,7 +12,15 @@
     X-XSS-Protection = "1; mode=block"
 
 [functions]
-  included_files = ["src/content/*.md"]
+  included_files = [
+    "src/content/**/index.md",
+    "src/content/**/*.png",
+    "src/content/**/*.jpg",
+    "src/content/**/*.jpeg",
+    "src/content/**/*.gif",
+    "src/content/**/*.webp",
+    "src/content/**/*.svg"
+  ]
 
 # Include all files in deployment
 [build.environment]

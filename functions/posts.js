@@ -59,24 +59,34 @@ exports.handler = async function(event, context) {
       throw new Error('Could not find content directory in any of the expected locations');
     }
     
-    // Filter and process Markdown files
+    // Filter and process directories (each post is now a directory with index.md)
     const posts = files
-      .filter(file => file.endsWith('.md'))
-      .map(file => {
+      .filter(file => {
         const filePath = path.join(contentDir, file);
-        const content = fs.readFileSync(filePath, 'utf8');
-
-        // Extract date from frontmatter
-        const dateMatch = content.match(/^---\s*[\r\n]+date:\s*(.+?)[\r\n]+---/);
-        const date = dateMatch ? new Date(dateMatch[1].trim()) : new Date();
-
-        console.log(`Post: ${file}, Date extracted: ${dateMatch ? dateMatch[1].trim() : 'none'}, ISO: ${date.toISOString()}`);
-
-        return {
-          name: path.basename(file, '.md'),
-          createdAt: date.toISOString(),
-        };
+        return fs.statSync(filePath).isDirectory();
       })
+      .map(dirName => {
+        const indexPath = path.join(contentDir, dirName, 'index.md');
+        
+        try {
+          const content = fs.readFileSync(indexPath, 'utf8');
+
+          // Extract date from frontmatter
+          const dateMatch = content.match(/^---\s*[\r\n]+date:\s*(.+?)[\r\n]+---/);
+          const date = dateMatch ? new Date(dateMatch[1].trim()) : new Date();
+
+          console.log(`Post: ${dirName}, Date extracted: ${dateMatch ? dateMatch[1].trim() : 'none'}, ISO: ${date.toISOString()}`);
+
+          return {
+            name: dirName,
+            createdAt: date.toISOString(),
+          };
+        } catch (error) {
+          console.log(`Could not read index.md for ${dirName}: ${error.message}`);
+          return null;
+        }
+      })
+      .filter(post => post !== null)
       .sort((a, b) => {
         const diff = new Date(b.createdAt) - new Date(a.createdAt);
         console.log(`Comparing ${b.name} (${b.createdAt}) vs ${a.name} (${a.createdAt}): ${diff}`);
