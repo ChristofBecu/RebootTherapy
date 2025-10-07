@@ -48,6 +48,21 @@ exports.handler = async function(event, context) {
   }
   
   try {
+    // Debug: List what's actually available
+    console.log('Current working directory:', process.cwd());
+    console.log('__dirname:', __dirname);
+    console.log('LAMBDA_TASK_ROOT:', process.env.LAMBDA_TASK_ROOT);
+    
+    // Try to list the content directory to see what's there
+    try {
+      const contentPath = path.join(__dirname, '..', 'src', 'content', postName);
+      console.log(`Trying to list: ${contentPath}`);
+      const files = fs.readdirSync(contentPath);
+      console.log(`Files in ${postName}:`, files.join(', '));
+    } catch (err) {
+      console.log(`Could not list directory: ${err.message}`);
+    }
+    
     // Try multiple possible image locations
     const possiblePaths = [
       // Netlify environment paths
