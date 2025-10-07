@@ -82,6 +82,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 event.preventDefault();
                 const post = event.target.getAttribute('data-post');
                 renderPost(post);
+                
+                // Close the menu on mobile after selecting a post
+                sidebar.classList.add('hidden');
+                toggleNavButton.innerHTML = '☰';
             }
         });
 
