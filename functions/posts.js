@@ -67,7 +67,7 @@ exports.handler = async function(event, context) {
         const stats = fs.statSync(filePath);
         return {
           name: path.basename(file, '.md'),
-          createdAt: stats.birthtime,
+          createdAt: stats.mtime,
         };
       })
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
