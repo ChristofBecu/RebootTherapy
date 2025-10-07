@@ -153,6 +153,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const html = marked.parse(markdown, { renderer }); // Parse with custom renderer
         postContainer.innerHTML = html; // Don't add extra heading since markdown has the title
         
+        // Check for commit history placeholder
+        const commitPlaceholder = postContainer.querySelector('[data-commit-history]');
+        if (commitPlaceholder) {
+            const owner = commitPlaceholder.dataset.owner || 'ChristofBecu';
+            const repo = commitPlaceholder.dataset.repo || 'dotfiles';
+            const path = commitPlaceholder.dataset.path || '';
+            
+            // Create unique ID if not present
+            if (!commitPlaceholder.id) {
+                commitPlaceholder.id = `commit-viewer-${Date.now()}`;
+            }
+            
+            // Initialize commit viewer
+            const viewer = new CommitHistoryViewer(commitPlaceholder.id);
+            viewer.initExternal(owner, repo, path);
+        }
+        
         // Scroll the main element (which has overflow-y: auto) to top
         const mainElement = document.querySelector('main');
         if (mainElement) {
