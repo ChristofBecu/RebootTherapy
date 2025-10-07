@@ -298,24 +298,25 @@ body.dark-mode main figcaption {
         position: fixed;
         top: 0;
         right: 0;
-        width: 80%;
-        max-width: 300px;
+        width: 100%;
+        max-width: 100%;
         height: 100vh;
-        background-color: #ffffff;
-        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+        background-color: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
         z-index: 999;
         overflow-y: auto;
     }
     
     /* Dark mode navigation background */
     body.dark-mode .nav-container {
-        background-color: #1a1a1a;
-        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+        background-color: rgba(26, 26, 26, 0.98);
+        backdrop-filter: blur(10px);
     }
     
     /* Add padding to sidebar content on mobile */
     .sidebar {
         padding: 20px;
+        padding-top: 60px; /* Extra top padding to avoid buttons */
     }
 }
 
