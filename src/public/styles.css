@@ -73,6 +73,7 @@ body.dark-mode #toggle-nav:hover {
 .sidebar {
     flex: 1;
     overflow-y: auto; /* Scroll if content overflows */
+    padding: 20px 15px; /* Add padding to the sidebar container */
 }
 
 .sidebar ul {
