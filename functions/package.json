@@ -4,7 +4,7 @@
   "description": "Netlify Functions for blog website",
   "main": "posts.js",
   "dependencies": {
-    "fs": "0.0.1-security",
+    "fs": "0.0.2-security",
     "path": "^0.12.7"
   }
 }
