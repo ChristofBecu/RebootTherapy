@@ -52,8 +52,7 @@ exports.handler = async function(event, context) {
     }
 
     // Strip frontmatter (everything between --- and ---)
-    const contentWithoutFrontmatter = content.
-    replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
+    const contentWithoutFrontmatter = content.replace(/^---[\r\n]+[\s\S]*?[\r\n]+---[\r\n]+/, '');
     
     // Return successful response
     return {

@@ -67,15 +67,21 @@ exports.handler = async function(event, context) {
         const content = fs.readFileSync(filePath, 'utf8');
 
         // Extract date from frontmatter
-        const dateMatch = content.match(/^---\s*\n[\s\S]*?date:\s*(.+?)\n[\s\S]*?\n---/);
+        const dateMatch = content.match(/^---\s*[\r\n]+date:\s*(.+?)[\r\n]+---/);
         const date = dateMatch ? new Date(dateMatch[1].trim()) : new Date();
+
+        console.log(`Post: ${file}, Date extracted: ${dateMatch ? dateMatch[1].trim() : 'none'}, ISO: ${date.toISOString()}`);
 
         return {
           name: path.basename(file, '.md'),
           createdAt: date.toISOString(),
         };
       })
-      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      .sort((a, b) => {
+        const diff = new Date(b.createdAt) - new Date(a.createdAt);
+        console.log(`Comparing ${b.name} (${b.createdAt}) vs ${a.name} (${a.createdAt}): ${diff}`);
+        return diff;
+      });
     
     return {
       statusCode: 200,
