@@ -1,4 +1,30 @@
+// Dark mode toggle functionality
+function initDarkMode() {
+    const toggleButton = document.createElement('button');
+    toggleButton.className = 'theme-toggle';
+    toggleButton.setAttribute('aria-label', 'Toggle dark mode');
+    toggleButton.innerHTML = '🌙';
+    document.body.appendChild(toggleButton);
+
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        toggleButton.innerHTML = '☀️';
+    }
+
+    toggleButton.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        toggleButton.innerHTML = isDark ? '☀️' : '🌙';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize dark mode
+    initDarkMode();
+
     const postContainer = document.getElementById('blog-content');
     const navList = document.querySelector('nav ul');
     const sidebar = document.querySelector('.nav-container'); // Select the navigation menu
@@ -7,15 +33,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Ensure the navigation menu is visible on startup
     sidebar.classList.remove('hidden');
 
+    // Update button text to use icons - show X since menu is visible
+    toggleNavButton.innerHTML = '✕';
+
     // Add event listener to toggle the navigation menu
     toggleNavButton.addEventListener('click', () => {
         sidebar.classList.toggle('hidden'); // Toggle the "hidden" class
 
-        // Update button text based on sidebar visibility
+        // Update button icon based on sidebar visibility
         if (sidebar.classList.contains('hidden')) {
-            toggleNavButton.textContent = 'Show Posts';
+            toggleNavButton.innerHTML = '☰';
         } else {
-            toggleNavButton.textContent = 'Hide Posts';
+            toggleNavButton.innerHTML = '✕';
         }
     });
 
