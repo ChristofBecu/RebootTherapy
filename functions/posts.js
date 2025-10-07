@@ -64,10 +64,15 @@ exports.handler = async function(event, context) {
       .filter(file => file.endsWith('.md'))
       .map(file => {
         const filePath = path.join(contentDir, file);
-        const stats = fs.statSync(filePath);
+        const content = fs.readFileSync(filePath, 'utf8');
+
+        // Extract date from frontmatter
+        const dateMatch = content.match(/^---\s*\n[\s\S]*?date:\s*(.+?)\n[\s\S]*?\n---/);
+        const date = dateMatch ? new Date(dateMatch[1].trim()) : new Date();
+
         return {
           name: path.basename(file, '.md'),
-          createdAt: stats.mtime,
+          createdAt: date.toISOString(),
         };
       })
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));

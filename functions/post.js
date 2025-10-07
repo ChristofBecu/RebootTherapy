@@ -50,6 +50,10 @@ exports.handler = async function(event, context) {
     if (!foundFile) {
       throw new Error(`Could not find post "${postName}" in any of the expected locations`);
     }
+
+    // Strip frontmatter (everything between --- and ---)
+    const contentWithoutFrontmatter = content.
+    replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
     
     // Return successful response
     return {
@@ -57,7 +61,7 @@ exports.handler = async function(event, context) {
       headers: {
         "Content-Type": "text/markdown"
       },
-      body: content
+      body: contentWithoutFrontmatter
     };
   } catch (error) {
     // Return error response
