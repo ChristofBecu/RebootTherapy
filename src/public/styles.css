@@ -119,7 +119,7 @@ main h2 {
 header {
     background: #35424a;
     color: #ffffff;
-    padding: 10px 0;
+    padding: 10px 20px;
     text-align: center;
 }
 
@@ -277,20 +277,15 @@ body.dark-mode main figcaption {
 
 /* Mobile responsive styles */
 @media screen and (max-width: 768px) {
-    /* Adjust header padding to make room for buttons */
+    /* Left-align header title to avoid button overlap */
     header {
-        padding: 60px 0 10px 0; /* Add top padding to avoid button overlap */
+        text-align: left;
+        padding: 10px 20px;
     }
     
-    /* Ensure buttons stay visible above header */
-    #toggle-nav,
-    .theme-toggle {
-        top: 10px; /* Move buttons closer to the top edge */
-    }
-    
-    /* Stack buttons vertically or adjust spacing if needed */
-    .theme-toggle {
-        right: 60px; /* Adjust spacing between buttons */
+    header h1 {
+        font-size: 1.5rem;
+        padding-right: 100px; /* Make room for buttons on the right */
     }
     
     /* Reduce main content padding on mobile */
@@ -307,17 +302,14 @@ body.dark-mode main figcaption {
 
 /* Extra small mobile devices */
 @media screen and (max-width: 480px) {
-    header {
-        padding: 70px 10px 10px 10px;
-    }
-    
     header h1 {
-        font-size: 1.5rem; /* Smaller title on very small screens */
+        font-size: 1.3rem;
+        padding-right: 100px;
     }
     
     #toggle-nav {
         right: 10px;
-        top: 10px;
+        top: 15px;
         width: 35px;
         height: 35px;
         font-size: 1rem;
@@ -325,7 +317,7 @@ body.dark-mode main figcaption {
     
     .theme-toggle {
         right: 55px;
-        top: 10px;
+        top: 15px;
         width: 35px;
         height: 35px;
         font-size: 1rem;
