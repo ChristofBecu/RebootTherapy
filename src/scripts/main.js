@@ -2,7 +2,7 @@
 import { initDarkMode } from './darkMode.js';
 import { parseFrontmatter } from './utils.js';
 import { fetchPostNames, loadMarkdown } from './api.js';
-import { initNavigation, renderPostList, closeMenuOnMobile } from './navigation.js';
+import { initNavigation, renderPostList, attachPostClickListener, closeMenuOnMobile } from './navigation.js';
 import { renderTagFilter, updateTagButtonStates, collectTags } from './tagFilter.js';
 import { renderPost } from './postRenderer.js';
 
@@ -10,6 +10,7 @@ import { renderPost } from './postRenderer.js';
 let allPosts = [];
 let allTags = new Set();
 let currentTag = 'all';
+let sortedPosts = []; // Store the original sorted posts array
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize dark mode
@@ -26,6 +27,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Dynamically build the navigation menu
     async function buildNavigation() {
         const posts = await fetchPostNames();
+        
+        // Store the sorted posts array (already sorted by date from server)
+        sortedPosts = posts;
         
         // Load all posts and collect tags
         for (const post of posts) {
@@ -44,8 +48,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Render tag filter
         renderTagFilter(allTags, filterByTag);
         
+        // Attach post click listener once
+        attachPostClickListener(navList, (postName) => {
+            loadAndRenderPost(postName);
+            closeMenuOnMobile(sidebar, toggleNavButton);
+        });
+        
         // Render post list
-        updatePostList(posts);
+        updatePostList();
 
         // Optionally, load the first post by default
         if (posts.length > 0) {
@@ -54,18 +64,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     // Update post list based on filters
-    function updatePostList(posts) {
-        renderPostList(navList, posts, allPosts, currentTag, (postName) => {
-            loadAndRenderPost(postName);
-            closeMenuOnMobile(sidebar, toggleNavButton);
-        });
+    function updatePostList() {
+        renderPostList(navList, sortedPosts, allPosts, currentTag);
     }
     
     // Filter posts by tag
     function filterByTag(tag) {
         currentTag = tag;
         updateTagButtonStates(tag);
-        fetchPostNames().then(posts => updatePostList(posts));
+        updatePostList();
     }
 
     // Load and render a specific post

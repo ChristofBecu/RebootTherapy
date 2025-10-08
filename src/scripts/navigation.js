@@ -47,7 +47,7 @@ function updateButtonIcon(sidebar, toggleButton) {
 /**
  * Render the post list in the navigation
  * @param {HTMLElement} navList - The UL element to render into
- * @param {Array} posts - Array of post objects
+ * @param {Array} posts - Array of post objects (should be pre-sorted by date)
  * @param {Array} allPosts - Full post data with tags
  * @param {string} currentTag - Currently active tag filter
  * @param {Function} onPostClick - Callback when a post is clicked
@@ -55,14 +55,16 @@ function updateButtonIcon(sidebar, toggleButton) {
 export function renderPostList(navList, posts, allPosts, currentTag, onPostClick) {
     navList.innerHTML = '';
     
-    posts.forEach(post => {
+    // Filter posts based on current tag
+    const filteredPosts = posts.filter(post => {
+        if (currentTag === 'all') return true;
+        
         const postData = allPosts.find(p => p.name === post.name);
-        
-        // Filter by current tag
-        if (currentTag !== 'all' && (!postData || !postData.tags.includes(currentTag))) {
-            return;
-        }
-        
+        return postData && postData.tags && postData.tags.includes(currentTag);
+    });
+    
+    // Render filtered posts (maintains original sort order)
+    filteredPosts.forEach(post => {
         const listItem = document.createElement('li');
         const link = document.createElement('a');
         link.href = '#';
@@ -71,8 +73,14 @@ export function renderPostList(navList, posts, allPosts, currentTag, onPostClick
         listItem.appendChild(link);
         navList.appendChild(listItem);
     });
-    
-    // Attach event listener for post clicks
+}
+
+/**
+ * Attach event listener for post navigation (call once during initialization)
+ * @param {HTMLElement} navList - The UL element to attach listener to
+ * @param {Function} onPostClick - Callback when a post is clicked
+ */
+export function attachPostClickListener(navList, onPostClick) {
     navList.addEventListener('click', (event) => {
         if (event.target.tagName === 'A') {
             event.preventDefault();
