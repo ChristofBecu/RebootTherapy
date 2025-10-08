@@ -1,5 +1,6 @@
 ---
 date: 2025-10-07T07:02:28
+tags: fish shell, performance, git, linux
 ---
 
 # When Fish Prompt Meets the Linux Kernel (and Loses)

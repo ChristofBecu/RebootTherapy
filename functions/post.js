@@ -51,16 +51,14 @@ exports.handler = async function(event, context) {
       throw new Error(`Could not find post "${postName}" in any of the expected locations`);
     }
 
-    // Strip frontmatter (everything between --- and ---)
-    const contentWithoutFrontmatter = content.replace(/^---[\r\n]+[\s\S]*?[\r\n]+---[\r\n]+/, '');
-    
+    // Return the full content including frontmatter (client will parse it)
     // Return successful response
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "text/markdown"
       },
-      body: contentWithoutFrontmatter
+      body: content
     };
   } catch (error) {
     // Return error response

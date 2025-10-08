@@ -21,6 +21,47 @@ function initDarkMode() {
     });
 }
 
+// Global variables for tag management
+let allPosts = [];
+let allTags = new Set();
+let currentTag = 'all';
+
+// Parse frontmatter to extract metadata including tags
+function parseFrontmatter(markdown) {
+    // Use the same regex pattern that works in posts.js
+    const frontmatterRegex = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---/;
+    const match = markdown.match(frontmatterRegex);
+    
+    if (!match) {
+        return { tags: [], content: markdown };
+    }
+    
+    const frontmatter = {};
+    const lines = match[1].split(/[\r\n]+/);
+    
+    lines.forEach(line => {
+        const colonIndex = line.indexOf(':');
+        if (colonIndex > 0) {
+            const key = line.substring(0, colonIndex).trim();
+            const value = line.substring(colonIndex + 1).trim();
+            frontmatter[key] = value;
+        }
+    });
+    
+    // Parse tags (comma-separated)
+    if (frontmatter.tags) {
+        frontmatter.tags = frontmatter.tags.split(',').map(t => t.trim());
+    } else {
+        frontmatter.tags = [];
+    }
+    
+    // Strip frontmatter from content
+    const content = markdown.replace(frontmatterRegex, '').trim();
+    frontmatter.content = content;
+    
+    return frontmatter;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize dark mode
     initDarkMode();
@@ -75,16 +116,28 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Dynamically build the navigation menu
     async function buildNavigation() {
-        const posts = await fetchPostNames(); // Fetch the array of post objects
-        posts.forEach(post => {
-            const listItem = document.createElement('li');
-            const link = document.createElement('a');
-            link.href = '#';
-            link.setAttribute('data-post', post.name); // Use the name property for the URL
-            link.textContent = post.title; // Display the title
-            listItem.appendChild(link);
-            navList.appendChild(listItem);
-        });
+        const posts = await fetchPostNames();
+        
+        // Load all posts and collect tags
+        for (const post of posts) {
+            const markdown = await loadMarkdown(post.name);
+            const metadata = parseFrontmatter(markdown);
+            allPosts.push({
+                name: post.name,
+                title: post.title,
+                tags: metadata.tags || []
+            });
+            // Add tags to global set
+            if (metadata.tags && metadata.tags.length > 0) {
+                metadata.tags.forEach(tag => allTags.add(tag));
+            }
+        }
+        
+        // Render tag filter
+        renderTagFilter();
+        
+        // Render post list
+        renderPostList(posts);
 
         // Attach event listeners to dynamically created links
         navList.addEventListener('click', (event) => {
@@ -106,6 +159,79 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderPost(posts[0].name);
         }
     }
+    
+    // Render tag filter buttons
+    function renderTagFilter() {
+        const tagList = document.getElementById('tag-list');
+        tagList.innerHTML = '';
+        
+        // Add "All" button with post count
+        const allBtn = document.createElement('button');
+        allBtn.className = 'tag-filter-btn active';
+        allBtn.textContent = 'All Posts';
+        allBtn.onclick = () => filterByTag('all');
+        tagList.appendChild(allBtn);
+        
+        // Add tag buttons
+        Array.from(allTags).sort().forEach(tag => {
+            const btn = document.createElement('button');
+            btn.className = 'tag-filter-btn';
+            btn.textContent = tag;
+            btn.dataset.tag = tag;
+            btn.onclick = () => filterByTag(tag);
+            tagList.appendChild(btn);
+        });
+        
+        // Make tag section collapsible
+        const tagSection = document.querySelector('.tag-filter-section');
+        const heading = tagSection.querySelector('h3');
+        
+        // Start collapsed to save space
+        tagSection.classList.add('collapsed');
+        
+        heading.onclick = (e) => {
+            e.stopPropagation();
+            tagSection.classList.toggle('collapsed');
+        };
+    }
+    
+    // Render post list (filtered or all)
+    function renderPostList(posts) {
+        navList.innerHTML = '';
+        posts.forEach(post => {
+            const postData = allPosts.find(p => p.name === post.name);
+            
+            // Filter by current tag
+            if (currentTag !== 'all' && (!postData || !postData.tags.includes(currentTag))) {
+                return;
+            }
+            
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = '#';
+            link.setAttribute('data-post', post.name);
+            link.textContent = post.title;
+            listItem.appendChild(link);
+            navList.appendChild(listItem);
+        });
+    }
+    
+    // Filter posts by tag
+    function filterByTag(tag) {
+        currentTag = tag;
+        
+        // Update button states
+        document.querySelectorAll('.tag-filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if ((tag === 'all' && btn.textContent === 'All Posts') || 
+                (btn.dataset.tag === tag)) {
+                btn.classList.add('active');
+            }
+        });
+        
+        // Re-render post list with filter
+        fetchPostNames().then(posts => renderPostList(posts));
+    }
 
     async function loadMarkdown(post) {
         try {
@@ -123,6 +249,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function renderPost(post) {
         const markdown = await loadMarkdown(post);
+        
+        // Parse and strip frontmatter
+        const parsed = parseFrontmatter(markdown);
+        const contentWithoutFrontmatter = parsed.content || markdown;
         
         // Configure marked renderer to handle relative image paths
         const renderer = new marked.Renderer();
@@ -150,7 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         };
         
-        const html = marked.parse(markdown, { renderer }); // Parse with custom renderer
+        const html = marked.parse(contentWithoutFrontmatter, { renderer }); // Parse with custom renderer
         postContainer.innerHTML = html; // Don't add extra heading since markdown has the title
         
         // Check for commit history placeholder
