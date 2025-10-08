@@ -31,18 +31,14 @@ function getReactionFilePath(postSlug) {
 }
 
 // Read reactions for a post
-async function readReactions(postSlug, context) {
+async function readReactions(postSlug, store) {
   if (isProduction) {
-    if (!getStore) {
-      console.error('Production environment detected but @netlify/blobs not available');
+    if (!store) {
+      console.error('Production environment detected but Blobs store not provided');
       return { emojis: {} };
     }
     // Use Netlify Blobs in production
     try {
-      // Netlify Functions automatically provide authentication
-      // Just specify the store name
-      console.log('Creating Blobs store with name: reactions');
-      const store = getStore('reactions');
       const data = await store.get(postSlug);
       return data ? JSON.parse(data) : { emojis: {} };
     } catch (error) {
@@ -69,18 +65,14 @@ async function readReactions(postSlug, context) {
 }
 
 // Write reactions for a post
-async function writeReactions(postSlug, reactions, context) {
+async function writeReactions(postSlug, reactions, store) {
   if (isProduction) {
-    if (!getStore) {
-      console.error('Production environment detected but @netlify/blobs not available');
+    if (!store) {
+      console.error('Production environment detected but Blobs store not provided');
       throw new Error('Storage backend not available in production');
     }
     // Use Netlify Blobs in production
     try {
-      // Netlify Functions automatically provide authentication
-      // Just specify the store name
-      console.log('Creating Blobs store for writing with name: reactions');
-      const store = getStore('reactions');
       await store.set(postSlug, JSON.stringify(reactions));
       return true;
     } catch (error) {
@@ -125,6 +117,19 @@ exports.handler = async function(event, context) {
     contextKeys: context ? Object.keys(context) : []
   });
 
+  // Create Blobs store in handler (CRITICAL: must be done here, not outside!)
+  // Environment variables are only available in the handler context
+  let store = null;
+  if (isProduction && getStore) {
+    try {
+      console.log('Initializing Blobs store inside handler');
+      store = getStore('reactions');
+      console.log('Blobs store initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize Blobs store:', error);
+    }
+  }
+
   // Enable CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -154,7 +159,7 @@ exports.handler = async function(event, context) {
 
   // GET: Retrieve reactions
   if (event.httpMethod === 'GET') {
-    const reactions = await readReactions(postSlug, context);
+    const reactions = await readReactions(postSlug, store);
     return {
       statusCode: 200,
       headers,
@@ -177,7 +182,7 @@ exports.handler = async function(event, context) {
       }
 
       // Read current reactions
-      const reactions = await readReactions(postSlug, context);
+      const reactions = await readReactions(postSlug, store);
 
       // Initialize emojis object if it doesn't exist
       if (!reactions.emojis) {
@@ -196,7 +201,7 @@ exports.handler = async function(event, context) {
       }
 
       // Write updated reactions
-      const success = await writeReactions(postSlug, reactions, context);
+      const success = await writeReactions(postSlug, reactions, store);
 
       if (!success) {
         return {
