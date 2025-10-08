@@ -1,66 +1,12 @@
-// Dark mode toggle functionality
-function initDarkMode() {
-    const toggleButton = document.createElement('button');
-    toggleButton.className = 'theme-toggle';
-    toggleButton.setAttribute('aria-label', 'Toggle dark mode');
-    toggleButton.innerHTML = '🌙';
-    document.body.appendChild(toggleButton);
-
-    // Check for saved theme preference or default to dark mode
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-    if (currentTheme === 'dark') {
-        document.body.classList.add('dark-mode');
-        toggleButton.innerHTML = '☀️';
-    }
-
-    toggleButton.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        toggleButton.innerHTML = isDark ? '☀️' : '🌙';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
-}
+// Main application entry point
+import { initDarkMode } from './darkMode.js';
+import { CONFIG } from './config.js';
+import { isMobileView, scrollToTop, parseFrontmatter } from './utils.js';
 
 // Global variables for tag management
 let allPosts = [];
 let allTags = new Set();
 let currentTag = 'all';
-
-// Parse frontmatter to extract metadata including tags
-function parseFrontmatter(markdown) {
-    // Use the same regex pattern that works in posts.js
-    const frontmatterRegex = /^---\s*[\r\n]+([\s\S]*?)[\r\n]+---/;
-    const match = markdown.match(frontmatterRegex);
-    
-    if (!match) {
-        return { tags: [], content: markdown };
-    }
-    
-    const frontmatter = {};
-    const lines = match[1].split(/[\r\n]+/);
-    
-    lines.forEach(line => {
-        const colonIndex = line.indexOf(':');
-        if (colonIndex > 0) {
-            const key = line.substring(0, colonIndex).trim();
-            const value = line.substring(colonIndex + 1).trim();
-            frontmatter[key] = value;
-        }
-    });
-    
-    // Parse tags (comma-separated)
-    if (frontmatter.tags) {
-        frontmatter.tags = frontmatter.tags.split(',').map(t => t.trim());
-    } else {
-        frontmatter.tags = [];
-    }
-    
-    // Strip frontmatter from content
-    const content = markdown.replace(frontmatterRegex, '').trim();
-    frontmatter.content = content;
-    
-    return frontmatter;
-}
 
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize dark mode
@@ -68,20 +14,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const postContainer = document.getElementById('blog-content');
     const navList = document.querySelector('nav ul');
-    const sidebar = document.querySelector('.nav-container'); // Select the navigation menu
-    const toggleNavButton = document.getElementById('toggle-nav'); // Select the toggle button
-
-    // Function to check if we're on mobile
-    const isMobileView = () => window.matchMedia('(max-width: 768px)').matches;
+    const sidebar = document.querySelector('.nav-container');
+    const toggleNavButton = document.getElementById('toggle-nav');
     
     // Initialize menu state based on device
     function initializeMenuState() {
         if (isMobileView()) {
             sidebar.classList.add('hidden');
-            toggleNavButton.innerHTML = '☰';
+            toggleNavButton.innerHTML = CONFIG.icons.menuOpen;
         } else {
             sidebar.classList.remove('hidden');
-            toggleNavButton.innerHTML = '✕';
+            toggleNavButton.innerHTML = CONFIG.icons.menuClose;
         }
     }
     
@@ -89,20 +32,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Add event listener to toggle the navigation menu
     toggleNavButton.addEventListener('click', () => {
-        sidebar.classList.toggle('hidden'); // Toggle the "hidden" class
+        sidebar.classList.toggle('hidden');
 
         // Update button icon based on sidebar visibility
         if (sidebar.classList.contains('hidden')) {
-            toggleNavButton.innerHTML = '☰';
+            toggleNavButton.innerHTML = CONFIG.icons.menuOpen;
         } else {
-            toggleNavButton.innerHTML = '✕';
+            toggleNavButton.innerHTML = CONFIG.icons.menuClose;
         }
     });
 
     // Fetch post names from the server
     async function fetchPostNames() {
         try {
-            const response = await fetch('.netlify/functions/posts'); // Use Netlify Function
+            const response = await fetch(CONFIG.api.posts);
             if (!response.ok) {
                 throw new Error(`Failed to fetch posts: ${response.status} ${response.statusText}`);
             }
@@ -149,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Close the menu on mobile after selecting a post
                 if (isMobileView()) {
                     sidebar.classList.add('hidden');
-                    toggleNavButton.innerHTML = '☰';
+                    toggleNavButton.innerHTML = CONFIG.icons.menuOpen;
                 }
             }
         });
@@ -235,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function loadMarkdown(post) {
         try {
-            const response = await fetch(`/.netlify/functions/post/${encodeURIComponent(post)}`); // Use Netlify Function
+            const response = await fetch(CONFIG.api.post(post));
             if (!response.ok) {
                 throw new Error(`Failed to load ${post}: ${response.status} ${response.statusText}`);
             }
@@ -268,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             let newHref = href;
             if (href && href.startsWith('./')) {
                 const imageName = href.substring(2); // Remove './'
-                newHref = `/.netlify/functions/image/${encodeURIComponent(post)}/${encodeURIComponent(imageName)}`;
+                newHref = CONFIG.api.image(post, imageName);
             }
             
             // Update token if it's an object, otherwise pass parameters
@@ -286,8 +229,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Check for commit history placeholder
         const commitPlaceholder = postContainer.querySelector('[data-commit-history]');
         if (commitPlaceholder) {
-            const owner = commitPlaceholder.dataset.owner || 'ChristofBecu';
-            const repo = commitPlaceholder.dataset.repo || 'dotfiles';
+            const owner = commitPlaceholder.dataset.owner || CONFIG.commitHistory.defaultOwner;
+            const repo = commitPlaceholder.dataset.repo || CONFIG.commitHistory.defaultRepo;
             const path = commitPlaceholder.dataset.path || '';
             
             // Create unique ID if not present
@@ -300,11 +243,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             viewer.initExternal(owner, repo, path);
         }
         
-        // Scroll the main element (which has overflow-y: auto) to top
-        const mainElement = document.querySelector('main');
-        if (mainElement) {
-            mainElement.scrollTop = 0;
-        }
+        // Scroll the main element to top
+        scrollToTop(document.querySelector('main'));
     }
 
     // Build the navigation dynamically
