@@ -39,18 +39,25 @@ async function readReactions(postSlug, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // Get store configuration from Netlify context
+      // Get store configuration - siteID from environment variable
       const storeConfig = {
         name: 'reactions',
         consistency: 'strong'
       };
       
-      // Add siteID from context if available
-      if (context && context.site && context.site.id) {
-        storeConfig.siteID = context.site.id;
+      // Get siteID from environment variable or context
+      const siteID = process.env.NETLIFY_SITE_ID || 
+                     (context && context.site && context.site.id);
+      
+      if (siteID) {
+        storeConfig.siteID = siteID;
       }
       
-      console.log('Store config:', { ...storeConfig, siteID: storeConfig.siteID ? 'present' : 'missing' });
+      console.log('Store config:', { 
+        ...storeConfig, 
+        siteID: storeConfig.siteID ? 'present' : 'missing',
+        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing'
+      });
       
       const store = getStore(storeConfig);
       const data = await store.get(postSlug);
@@ -86,18 +93,25 @@ async function writeReactions(postSlug, reactions, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // Get store configuration from Netlify context
+      // Get store configuration - siteID from environment variable
       const storeConfig = {
         name: 'reactions',
         consistency: 'strong'
       };
       
-      // Add siteID from context if available
-      if (context && context.site && context.site.id) {
-        storeConfig.siteID = context.site.id;
+      // Get siteID from environment variable or context
+      const siteID = process.env.NETLIFY_SITE_ID || 
+                     (context && context.site && context.site.id);
+      
+      if (siteID) {
+        storeConfig.siteID = siteID;
       }
       
-      console.log('Store config:', { ...storeConfig, siteID: storeConfig.siteID ? 'present' : 'missing' });
+      console.log('Store config:', { 
+        ...storeConfig, 
+        siteID: storeConfig.siteID ? 'present' : 'missing',
+        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing'
+      });
       
       const store = getStore(storeConfig);
       await store.set(postSlug, JSON.stringify(reactions));
