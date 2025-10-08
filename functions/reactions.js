@@ -14,7 +14,8 @@ try {
 const REACTIONS_DIR = path.join(__dirname, '..', 'data', 'reactions');
 
 // Check if we're running in production (Netlify)
-const isProduction = process.env.NETLIFY === 'true';
+// Netlify sets AWS_LAMBDA_FUNCTION_NAME when running in their environment
+const isProduction = !!process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NETLIFY === 'true';
 
 // Ensure reactions directory exists (local only)
 function ensureReactionsDir() {
@@ -101,6 +102,14 @@ function isValidEmoji(emoji) {
 }
 
 exports.handler = async function(event, context) {
+  // Debug: Log environment detection
+  console.log('Environment check:', {
+    AWS_LAMBDA_FUNCTION_NAME: process.env.AWS_LAMBDA_FUNCTION_NAME,
+    NETLIFY: process.env.NETLIFY,
+    isProduction,
+    hasGetStore: !!getStore
+  });
+
   // Enable CORS
   const headers = {
     'Access-Control-Allow-Origin': '*',
