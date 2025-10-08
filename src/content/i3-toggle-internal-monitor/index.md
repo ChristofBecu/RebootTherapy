@@ -3,7 +3,7 @@ date: 2025-10-07T07:15:12
 tags: i3, xrandr, monitor, linux
 ---
 
-# Toggling the Laptop Panel in an i3 + Dual Monitor Setup
+# 💻🙈👀 Toggling the Laptop Panel in an i3 + Dual Monitor Setup
 
 Sometimes I just want the external monitor and none of the glare, distraction, or pixel waste of the laptop panel. My setup: internal display (eDP) + external over HDMI. Goal: a single keypress that disables (or re‑enables) the laptop screen.
 

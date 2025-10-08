@@ -3,7 +3,7 @@ date: 2025-08-16T16:36:25
 tags: i3lock, i3, troubleshooting, linux, security
 ---
 
-# i3lock and the Password That Never Was
+# 🔒🔑🚫 i3lock and the Password That Never Was
 
 There’s nothing quite like confidently locking your screen, walking away, and coming back only to discover that your password doesn’t work.
 

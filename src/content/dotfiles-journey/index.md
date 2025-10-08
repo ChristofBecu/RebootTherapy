@@ -3,7 +3,7 @@ date: 2025-10-08T22:30:07
 tags: dotfiles, git, configuration, automation
 ---
 
-# 🔧 Control Freak: Dotfiles
+# 🔧🧬🤹 Control Freak: Dotfiles
 
 *A chronicle of chaos, control, and the illusion thereof.*
 

@@ -3,7 +3,7 @@ date: 2025-10-07T07:02:28
 tags: fish shell, performance, git, linux
 ---
 
-# When Fish Prompt Meets the Linux Kernel (and Loses)
+# 🐟🐧🐢 When Fish Prompt Meets the Linux Kernel (and Loses)
 
 My Fish shell right prompt normally shows a tidy Git status: branch name, dirty marker, maybe ahead/behind arrows. It feels great—until you `cd` into the Linux kernel source tree. Then every keypress gets taxed while Fish waits for `git` to spelunk a gigantic repository. The prompt stops feeling instant and starts feeling like 2008 spinning rust.
 
