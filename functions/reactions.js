@@ -39,40 +39,15 @@ async function readReactions(postSlug, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // Get store configuration - siteID and token from environment variables
-      const storeConfig = {
-        name: 'reactions',
-        consistency: 'strong'
-      };
-      
-      // Get siteID from environment variable or context
-      const siteID = process.env.NETLIFY_SITE_ID || 
-                     (context && context.site && context.site.id);
-      
-      // Get token from environment variable
-      const token = process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
-      
-      if (siteID) {
-        storeConfig.siteID = siteID;
-      }
-      
-      if (token) {
-        storeConfig.token = token;
-      }
-      
-      console.log('Store config:', { 
-        ...storeConfig, 
-        siteID: storeConfig.siteID ? 'present' : 'missing',
-        token: storeConfig.token ? 'present' : 'missing',
-        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing',
-        envToken: (process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN) ? 'present' : 'missing'
-      });
-      
-      const store = getStore(storeConfig);
+      // Netlify Functions automatically provide authentication
+      // Just specify the store name
+      console.log('Creating Blobs store with name: reactions');
+      const store = getStore('reactions');
       const data = await store.get(postSlug);
       return data ? JSON.parse(data) : { emojis: {} };
     } catch (error) {
       console.error('Error reading from Netlify Blobs:', error);
+      console.error('Error details:', error.message, error.stack);
       return { emojis: {} };
     }
   } else {
@@ -102,40 +77,15 @@ async function writeReactions(postSlug, reactions, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // Get store configuration - siteID and token from environment variables
-      const storeConfig = {
-        name: 'reactions',
-        consistency: 'strong'
-      };
-      
-      // Get siteID from environment variable or context
-      const siteID = process.env.NETLIFY_SITE_ID || 
-                     (context && context.site && context.site.id);
-      
-      // Get token from environment variable
-      const token = process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
-      
-      if (siteID) {
-        storeConfig.siteID = siteID;
-      }
-      
-      if (token) {
-        storeConfig.token = token;
-      }
-      
-      console.log('Store config:', { 
-        ...storeConfig, 
-        siteID: storeConfig.siteID ? 'present' : 'missing',
-        token: storeConfig.token ? 'present' : 'missing',
-        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing',
-        envToken: (process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN) ? 'present' : 'missing'
-      });
-      
-      const store = getStore(storeConfig);
+      // Netlify Functions automatically provide authentication
+      // Just specify the store name
+      console.log('Creating Blobs store for writing with name: reactions');
+      const store = getStore('reactions');
       await store.set(postSlug, JSON.stringify(reactions));
       return true;
     } catch (error) {
       console.error('Error writing to Netlify Blobs:', error);
+      console.error('Error details:', error.message, error.stack);
       return false;
     }
   } else {
