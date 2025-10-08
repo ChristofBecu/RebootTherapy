@@ -1,6 +1,7 @@
 // Post rendering with markdown parsing and image handling
 import { CONFIG } from './config.js';
 import { scrollToTop, parseFrontmatter } from './utils.js';
+import { initReactions } from './reactions.js';
 
 /**
  * Render a post's markdown content into the container
@@ -22,6 +23,9 @@ export async function renderPost(postName, markdown, container) {
     
     // Initialize commit history viewer if present
     initCommitHistoryViewer(container);
+    
+    // Add reactions widget at the end of the post
+    addReactionsWidget(postName, container);
     
     // Scroll to top
     scrollToTop(document.querySelector('main'));
@@ -83,4 +87,22 @@ function initCommitHistoryViewer(container) {
         const viewer = new CommitHistoryViewer(commitPlaceholder.id);
         viewer.initExternal(owner, repo, path);
     }
+}
+
+/**
+ * Add reactions widget to the post
+ * @param {string} postName - Name of the post
+ * @param {HTMLElement} container - Container element
+ */
+function addReactionsWidget(postName, container) {
+    // Create reactions container
+    const reactionsContainer = document.createElement('div');
+    reactionsContainer.className = 'reactions-container';
+    reactionsContainer.id = `reactions-${postName}`;
+    
+    // Append to the end of the post content
+    container.appendChild(reactionsContainer);
+    
+    // Initialize reactions widget
+    initReactions(postName, reactionsContainer);
 }
