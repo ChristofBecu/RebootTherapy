@@ -1,12 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-// Import Netlify Blobs (only available in production)
+// Import Netlify Blobs
 let getStore;
 try {
   getStore = require('@netlify/blobs').getStore;
+  console.log('Successfully loaded @netlify/blobs');
 } catch (error) {
-  // Blobs not available in local dev, will use filesystem
+  console.error('Failed to load @netlify/blobs:', error.message);
   getStore = null;
 }
 
@@ -31,7 +32,11 @@ function getReactionFilePath(postSlug) {
 
 // Read reactions for a post
 async function readReactions(postSlug, context) {
-  if (isProduction && getStore) {
+  if (isProduction) {
+    if (!getStore) {
+      console.error('Production environment detected but @netlify/blobs not available');
+      return { emojis: {} };
+    }
     // Use Netlify Blobs in production
     try {
       const store = getStore({
@@ -65,7 +70,11 @@ async function readReactions(postSlug, context) {
 
 // Write reactions for a post
 async function writeReactions(postSlug, reactions, context) {
-  if (isProduction && getStore) {
+  if (isProduction) {
+    if (!getStore) {
+      console.error('Production environment detected but @netlify/blobs not available');
+      throw new Error('Storage backend not available in production');
+    }
     // Use Netlify Blobs in production
     try {
       const store = getStore({
@@ -93,6 +102,7 @@ async function writeReactions(postSlug, reactions, context) {
     }
   }
 }
+
 
 // Validate emoji (basic check)
 function isValidEmoji(emoji) {
