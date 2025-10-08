@@ -39,12 +39,20 @@ async function readReactions(postSlug, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // In Netlify Functions, context is automatically provided by the platform
-      // Just pass the context directly - Netlify handles authentication
-      const store = getStore({
+      // Get store configuration from Netlify context
+      const storeConfig = {
         name: 'reactions',
         consistency: 'strong'
-      });
+      };
+      
+      // Add siteID from context if available
+      if (context && context.site && context.site.id) {
+        storeConfig.siteID = context.site.id;
+      }
+      
+      console.log('Store config:', { ...storeConfig, siteID: storeConfig.siteID ? 'present' : 'missing' });
+      
+      const store = getStore(storeConfig);
       const data = await store.get(postSlug);
       return data ? JSON.parse(data) : { emojis: {} };
     } catch (error) {
@@ -78,12 +86,20 @@ async function writeReactions(postSlug, reactions, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // In Netlify Functions, authentication is handled automatically
-      // Just create the store with the name
-      const store = getStore({
+      // Get store configuration from Netlify context
+      const storeConfig = {
         name: 'reactions',
         consistency: 'strong'
-      });
+      };
+      
+      // Add siteID from context if available
+      if (context && context.site && context.site.id) {
+        storeConfig.siteID = context.site.id;
+      }
+      
+      console.log('Store config:', { ...storeConfig, siteID: storeConfig.siteID ? 'present' : 'missing' });
+      
+      const store = getStore(storeConfig);
       await store.set(postSlug, JSON.stringify(reactions));
       return true;
     } catch (error) {
@@ -119,7 +135,10 @@ exports.handler = async function(event, context) {
     AWS_LAMBDA_FUNCTION_NAME: process.env.AWS_LAMBDA_FUNCTION_NAME,
     NETLIFY: process.env.NETLIFY,
     isProduction,
-    hasGetStore: !!getStore
+    hasGetStore: !!getStore,
+    hasContext: !!context,
+    hasSiteId: !!(context && context.site && context.site.id),
+    contextKeys: context ? Object.keys(context) : []
   });
 
   // Enable CORS
