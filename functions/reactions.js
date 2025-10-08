@@ -39,7 +39,7 @@ async function readReactions(postSlug, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // Get store configuration - siteID from environment variable
+      // Get store configuration - siteID and token from environment variables
       const storeConfig = {
         name: 'reactions',
         consistency: 'strong'
@@ -49,14 +49,23 @@ async function readReactions(postSlug, context) {
       const siteID = process.env.NETLIFY_SITE_ID || 
                      (context && context.site && context.site.id);
       
+      // Get token from environment variable
+      const token = process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
+      
       if (siteID) {
         storeConfig.siteID = siteID;
+      }
+      
+      if (token) {
+        storeConfig.token = token;
       }
       
       console.log('Store config:', { 
         ...storeConfig, 
         siteID: storeConfig.siteID ? 'present' : 'missing',
-        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing'
+        token: storeConfig.token ? 'present' : 'missing',
+        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing',
+        envToken: (process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN) ? 'present' : 'missing'
       });
       
       const store = getStore(storeConfig);
@@ -93,7 +102,7 @@ async function writeReactions(postSlug, reactions, context) {
     }
     // Use Netlify Blobs in production
     try {
-      // Get store configuration - siteID from environment variable
+      // Get store configuration - siteID and token from environment variables
       const storeConfig = {
         name: 'reactions',
         consistency: 'strong'
@@ -103,14 +112,23 @@ async function writeReactions(postSlug, reactions, context) {
       const siteID = process.env.NETLIFY_SITE_ID || 
                      (context && context.site && context.site.id);
       
+      // Get token from environment variable
+      const token = process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN;
+      
       if (siteID) {
         storeConfig.siteID = siteID;
+      }
+      
+      if (token) {
+        storeConfig.token = token;
       }
       
       console.log('Store config:', { 
         ...storeConfig, 
         siteID: storeConfig.siteID ? 'present' : 'missing',
-        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing'
+        token: storeConfig.token ? 'present' : 'missing',
+        envSiteID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing',
+        envToken: (process.env.NETLIFY_TOKEN || process.env.NETLIFY_AUTH_TOKEN) ? 'present' : 'missing'
       });
       
       const store = getStore(storeConfig);
