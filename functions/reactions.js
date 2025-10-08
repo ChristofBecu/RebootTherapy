@@ -118,13 +118,33 @@ exports.handler = async function(event, context) {
   });
 
   // Create Blobs store in handler (CRITICAL: must be done here, not outside!)
-  // Environment variables are only available in the handler context
+  // In Lambda, we must explicitly pass siteID and token
   let store = null;
   if (isProduction && getStore) {
     try {
       console.log('Initializing Blobs store inside handler');
-      store = getStore('reactions');
-      console.log('Blobs store initialized successfully');
+      
+      // Check for Netlify-provided environment variables
+      const siteID = process.env.NETLIFY_SITE_ID;
+      const token = process.env.NETLIFY_TOKEN;
+      
+      console.log('Environment variables:', {
+        hasSiteID: !!siteID,
+        hasToken: !!token,
+        allEnvKeys: Object.keys(process.env).filter(k => k.includes('NETLIFY') || k.includes('SITE'))
+      });
+      
+      if (!siteID || !token) {
+        console.error('Missing required environment variables for Blobs');
+        console.error('Available env vars:', Object.keys(process.env));
+      } else {
+        store = getStore({
+          name: 'reactions',
+          siteID: siteID,
+          token: token
+        });
+        console.log('Blobs store initialized successfully');
+      }
     } catch (error) {
       console.error('Failed to initialize Blobs store:', error);
     }
