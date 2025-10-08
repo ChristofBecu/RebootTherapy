@@ -9,7 +9,10 @@
     "status": "netlify status"
   },
   "dependencies": {
-    "marked": "^16.1.2"
+    "marked": "^16.1.2",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "@netlify/blobs": "10.0.11"
   },
   "keywords": [
     "blog",
