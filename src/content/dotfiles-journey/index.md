@@ -1,5 +1,6 @@
 ---
 date: 2100-12-04T15:30:07
+tags: dotfiles, git, configuration, automation
 ---
 
 # 🔧 Control Freak: Dotfiles

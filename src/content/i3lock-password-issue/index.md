@@ -1,5 +1,6 @@
 ---
 date: 2025-08-16T16:36:25
+tags: i3lock, i3, troubleshooting, linux, security
 ---
 
 # i3lock and the Password That Never Was
