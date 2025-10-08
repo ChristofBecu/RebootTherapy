@@ -1,49 +1,95 @@
 const fs = require('fs');
 const path = require('path');
 
-// Directory to store reaction data
+// Import Netlify Blobs (only available in production)
+let getStore;
+try {
+  getStore = require('@netlify/blobs').getStore;
+} catch (error) {
+  // Blobs not available in local dev, will use filesystem
+  getStore = null;
+}
+
+// Directory to store reaction data (for local development)
 const REACTIONS_DIR = path.join(__dirname, '..', 'data', 'reactions');
 
-// Ensure reactions directory exists
+// Check if we're running in production (Netlify)
+const isProduction = process.env.NETLIFY === 'true';
+
+// Ensure reactions directory exists (local only)
 function ensureReactionsDir() {
   if (!fs.existsSync(REACTIONS_DIR)) {
     fs.mkdirSync(REACTIONS_DIR, { recursive: true });
   }
 }
 
-// Get reaction file path for a post
+// Get reaction file path for a post (local only)
 function getReactionFilePath(postSlug) {
   return path.join(REACTIONS_DIR, `${postSlug}.json`);
 }
 
 // Read reactions for a post
-function readReactions(postSlug) {
-  const filePath = getReactionFilePath(postSlug);
-  
-  if (!fs.existsSync(filePath)) {
-    return { emojis: {} };
-  }
-  
-  try {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading reactions:', error);
-    return { emojis: {} };
+async function readReactions(postSlug, context) {
+  if (isProduction && getStore) {
+    // Use Netlify Blobs in production
+    try {
+      const store = getStore({
+        name: 'reactions',
+        siteID: context?.site?.id || process.env.SITE_ID,
+        token: context?.token || process.env.NETLIFY_TOKEN
+      });
+      const data = await store.get(postSlug);
+      return data ? JSON.parse(data) : { emojis: {} };
+    } catch (error) {
+      console.error('Error reading from Netlify Blobs:', error);
+      return { emojis: {} };
+    }
+  } else {
+    // Use filesystem for local development
+    const filePath = getReactionFilePath(postSlug);
+    
+    if (!fs.existsSync(filePath)) {
+      return { emojis: {} };
+    }
+    
+    try {
+      const data = fs.readFileSync(filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error reading reactions:', error);
+      return { emojis: {} };
+    }
   }
 }
 
 // Write reactions for a post
-function writeReactions(postSlug, reactions) {
-  ensureReactionsDir();
-  const filePath = getReactionFilePath(postSlug);
-  
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(reactions, null, 2), 'utf-8');
-    return true;
-  } catch (error) {
-    console.error('Error writing reactions:', error);
-    return false;
+async function writeReactions(postSlug, reactions, context) {
+  if (isProduction && getStore) {
+    // Use Netlify Blobs in production
+    try {
+      const store = getStore({
+        name: 'reactions',
+        siteID: context?.site?.id || process.env.SITE_ID,
+        token: context?.token || process.env.NETLIFY_TOKEN
+      });
+      await store.set(postSlug, JSON.stringify(reactions));
+      return true;
+    } catch (error) {
+      console.error('Error writing to Netlify Blobs:', error);
+      return false;
+    }
+  } else {
+    // Use filesystem for local development
+    ensureReactionsDir();
+    const filePath = getReactionFilePath(postSlug);
+    
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(reactions, null, 2), 'utf-8');
+      return true;
+    } catch (error) {
+      console.error('Error writing reactions:', error);
+      return false;
+    }
   }
 }
 
@@ -84,7 +130,7 @@ exports.handler = async function(event, context) {
 
   // GET: Retrieve reactions
   if (event.httpMethod === 'GET') {
-    const reactions = readReactions(postSlug);
+    const reactions = await readReactions(postSlug, context);
     return {
       statusCode: 200,
       headers,
@@ -107,7 +153,7 @@ exports.handler = async function(event, context) {
       }
 
       // Read current reactions
-      const reactions = readReactions(postSlug);
+      const reactions = await readReactions(postSlug, context);
 
       // Initialize emojis object if it doesn't exist
       if (!reactions.emojis) {
@@ -126,7 +172,7 @@ exports.handler = async function(event, context) {
       }
 
       // Write updated reactions
-      const success = writeReactions(postSlug, reactions);
+      const success = await writeReactions(postSlug, reactions, context);
 
       if (!success) {
         return {
@@ -147,7 +193,7 @@ exports.handler = async function(event, context) {
       return {
         statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Internal server error' })
+        body: JSON.stringify({ error: 'Internal server error', message: error.message })
       };
     }
   }
