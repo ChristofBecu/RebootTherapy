@@ -19,7 +19,8 @@
     "src/content/**/*.jpeg",
     "src/content/**/*.gif",
     "src/content/**/*.webp",
-    "src/content/**/*.svg"
+    "src/content/**/*.svg",
+    "data/reactions/*.json"
   ]
 
 # Include all files in deployment
