@@ -39,10 +39,11 @@ async function readReactions(postSlug, context) {
     }
     // Use Netlify Blobs in production
     try {
+      // In Netlify Functions, context is automatically provided by the platform
+      // Just pass the context directly - Netlify handles authentication
       const store = getStore({
         name: 'reactions',
-        siteID: context?.site?.id || process.env.SITE_ID,
-        token: context?.token || process.env.NETLIFY_TOKEN
+        consistency: 'strong'
       });
       const data = await store.get(postSlug);
       return data ? JSON.parse(data) : { emojis: {} };
@@ -77,10 +78,11 @@ async function writeReactions(postSlug, reactions, context) {
     }
     // Use Netlify Blobs in production
     try {
+      // In Netlify Functions, authentication is handled automatically
+      // Just create the store with the name
       const store = getStore({
         name: 'reactions',
-        siteID: context?.site?.id || process.env.SITE_ID,
-        token: context?.token || process.env.NETLIFY_TOKEN
+        consistency: 'strong'
       });
       await store.set(postSlug, JSON.stringify(reactions));
       return true;
