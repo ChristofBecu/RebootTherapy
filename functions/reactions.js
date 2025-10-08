@@ -125,9 +125,10 @@ exports.handler = async function(event, context) {
       console.log('Initializing Blobs store inside handler');
       
       // Check for Netlify-provided environment variables
-      // Note: In Lambda, the token is NETLIFY_FUNCTIONS_TOKEN, not NETLIFY_TOKEN
+      // Note: For Blobs access, we need a personal access token (NETLIFY_BLOBS_TOKEN)
+      // NETLIFY_FUNCTIONS_TOKEN is for internal function auth, not Blobs API
       const siteID = process.env.NETLIFY_SITE_ID;
-      const token = process.env.NETLIFY_FUNCTIONS_TOKEN;
+      const token = process.env.NETLIFY_BLOBS_TOKEN;
       
       console.log('Environment variables:', {
         hasSiteID: !!siteID,
@@ -136,7 +137,7 @@ exports.handler = async function(event, context) {
       
       if (!siteID || !token) {
         console.error('Missing required environment variables for Blobs');
-        console.error('Need NETLIFY_SITE_ID and NETLIFY_FUNCTIONS_TOKEN');
+        console.error('Need NETLIFY_SITE_ID and NETLIFY_BLOBS_TOKEN (personal access token)');
       } else {
         store = getStore({
           name: 'reactions',
