@@ -148,6 +148,8 @@ exports.handler = async function(event, context) {
   console.log('Environment check:', {
     AWS_LAMBDA_FUNCTION_NAME: process.env.AWS_LAMBDA_FUNCTION_NAME,
     NETLIFY: process.env.NETLIFY,
+    NETLIFY_SITE_ID: process.env.NETLIFY_SITE_ID ? 'present' : 'missing',
+    NETLIFY_SITE_ID_length: process.env.NETLIFY_SITE_ID ? process.env.NETLIFY_SITE_ID.length : 0,
     isProduction,
     hasGetStore: !!getStore,
     hasContext: !!context,
