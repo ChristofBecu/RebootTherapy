@@ -21,6 +21,13 @@ export async function renderPost(postName, markdown, container) {
     const html = marked.parse(contentWithoutFrontmatter, { renderer });
     container.innerHTML = html;
     
+    // Apply syntax highlighting to code blocks
+    if (typeof hljs !== 'undefined') {
+        container.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+        });
+    }
+    
     // Initialize commit history viewer if present
     initCommitHistoryViewer(container);
     
