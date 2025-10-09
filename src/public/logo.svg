@@ -40,7 +40,7 @@
         font-size="160" 
         font-weight="900" 
         fill="url(#greenGlow)" 
-        filter="url(#glow)">reboot</text>
+        filter="url(#glow)">REBOOT</text>
 
   <!-- THERAPY text -->
   <text x="710" y="140" 
