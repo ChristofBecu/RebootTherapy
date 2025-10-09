@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reboot Therapy</title>
+    <!-- Hack Font -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hack-font@3/build/web/hack.css">
     <link rel="stylesheet" href="public/styles.css">
     <!-- Highlight.js CSS - Using GitHub Dark theme -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
@@ -12,7 +14,10 @@
 
 <body>
     <header>
-        <h1>Reboot Therapy</h1>
+        <picture>
+            <source media="(max-width: 768px)" srcset="public/logo-mobile.svg">
+            <img src="public/logo.svg" alt="Reboot Therapy - A Chronicle of My Arch Linux Escapades" class="site-logo">
+        </picture>
     </header>
     <div class="container">
         <button id="toggle-nav">Hide Menu</button> <!-- Add this button -->
@@ -41,9 +46,9 @@
             <!-- Dynamic post loading -->
         </main>
     </div>
-    <footer>
+    <!-- <footer>
         <p>&copy; 2025 Reboot Therapy</p>
-        </footer>
+    </footer> -->
     <!-- Highlight.js Core Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
