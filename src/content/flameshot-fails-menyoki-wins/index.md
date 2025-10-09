@@ -114,7 +114,7 @@ I rewrote it to detect clipboard content types:
 
 ```bash
 #!/bin/bash
-# filepath: /home/bedawang/.config/i3/scripts/i3status-clipboard.sh
+# filepath: ~/.config/i3/scripts/i3status-clipboard.sh
 
 readonly STATUS_FILE="/tmp/clipboard_status"
 readonly MAX_LENGTH=40
@@ -145,6 +145,55 @@ while get_clipboard_status > "$STATUS_FILE"; do sleep "$SLEEP_INTERVAL"; done
 - Shows 🖼️ for images, 📎 for files
 - No more errors when binary data hits the clipboard
 - Cleaner code with `readonly` constants and a proper function
+
+### The Performance Optimization
+
+But I wasn't done yet. The script was checking the clipboard every 2 seconds, even when nothing changed. I added a simple optimization using MD5 hashing:
+
+```bash
+#!/bin/bash
+# filepath: ~/.config/i3/scripts/i3status-clipboard.sh
+
+readonly STATUS_FILE="/tmp/clipboard_status"
+readonly MAX_LENGTH=40
+readonly SLEEP_INTERVAL=2
+
+previous_hash=""
+
+clipboard_changed() {
+    local current_hash=$(xclip -o -selection clipboard 2>/dev/null | md5sum)
+    [[ "$current_hash" != "$previous_hash" ]] && previous_hash="$current_hash" && return 0
+    return 1
+}
+
+get_clipboard_status() {
+    local targets=$(xclip -selection clipboard -t TARGETS -o 2>/dev/null)
+    
+    case "$targets" in
+        *image*) echo "📋 🖼️" ;;
+        *application*) echo "📋 📎" ;;
+        *)
+            local clip=$(xclip -o -selection clipboard 2>/dev/null)
+            [[ -z "$clip" ]] && echo "📋" && return
+            
+            clip="${clip//$'\n'/ }"
+            echo "📋 ${clip:0:$MAX_LENGTH}$([[ ${#clip} -gt $MAX_LENGTH ]] && echo "...")"
+            ;;
+    esac
+}
+
+while true; do
+    clipboard_changed && get_clipboard_status > "$STATUS_FILE"
+    sleep "$SLEEP_INTERVAL"
+done
+```
+
+**The improvement:**
+
+- Only updates the status file when clipboard content actually changes
+- Uses MD5 hash to detect changes without parsing content
+- Reduces unnecessary file writes and processing
+- Makes the script more efficient, especially with large clipboard content
 
 ## The Result
 
