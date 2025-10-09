@@ -12,7 +12,13 @@ export function isMobileView() {
  */
 export function scrollToTop(element) {
     if (element) {
-        element.scrollTop = 0;
+        // Use requestAnimationFrame to ensure DOM is ready
+        requestAnimationFrame(() => {
+            element.scrollTo({
+                top: 0,
+                behavior: 'instant'
+            });
+        });
     }
 }
 
