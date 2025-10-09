@@ -72,14 +72,23 @@ exports.handler = async function(event, context) {
           const content = fs.readFileSync(indexPath, 'utf8');
 
           // Extract date from frontmatter
-          const dateMatch = content.match(/^---\s*[\r\n]+date:\s*(.+?)[\r\n]+---/);
-          const date = dateMatch ? new Date(dateMatch[1].trim()) : new Date();
+          // Match date field anywhere within the frontmatter block
+          const frontmatterMatch = content.match(/^---\s*$(.*?)^---\s*$/ms);
+          let date = new Date(); // Default to current date if not found
+          
+          if (frontmatterMatch) {
+            const frontmatter = frontmatterMatch[1];
+            const dateMatch = frontmatter.match(/^\s*date:\s*(.+?)\s*$/m);
+            if (dateMatch) {
+              date = new Date(dateMatch[1].trim());
+            }
+          }
 
           // Extract title from the first H1 heading (# Title)
           const titleMatch = content.match(/^#\s+(.+)$/m);
           const title = titleMatch ? titleMatch[1].trim() : dirName;
 
-          console.log(`Post: ${dirName}, Date extracted: ${dateMatch ? dateMatch[1].trim() : 'none'}, ISO: ${date.toISOString()}, Title: ${title}`);
+          console.log(`Post: ${dirName}, Date extracted: ${date.toISOString()}, Title: ${title}`);
 
           return {
             name: dirName,
