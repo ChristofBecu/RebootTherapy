@@ -13,6 +13,17 @@ let currentTag = 'all';
 let sortedPosts = []; // Store the original sorted posts array
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Register service worker for PWA
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/public/sw.js')
+            .then((registration) => {
+                console.log('Service Worker registered successfully:', registration.scope);
+            })
+            .catch((error) => {
+                console.error('Service Worker registration failed:', error);
+            });
+    }
+
     // Initialize dark mode
     initDarkMode();
 

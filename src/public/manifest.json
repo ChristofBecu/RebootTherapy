@@ -1,0 +1,24 @@
+{
+  "name": "Reboot Therapy",
+  "short_name": "Reboot Therapy",
+  "description": "A chronicle of my Arch Linux escapades—fixes, configs, crashes, and the occasional existential crisis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e1e1e",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/public/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/public/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
