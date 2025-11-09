@@ -149,7 +149,8 @@ After digging through logs and pacman history, nothing.
 No clue. Just silence.
 
 Then a thought:
-When updating the kernel, mkinitcpio removes 
+When updating the kernel, mkinitcpio removes and recreates the initramfs in /boot.
+If /boot wasn’t mounted at that time, the initramfs would be created in the root filesystem instead of the boot partition.
 
 Was /boot even mounted during the update?
 
