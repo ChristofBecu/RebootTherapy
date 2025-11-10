@@ -35,6 +35,8 @@ body {
 
 /* Navigation container */
 .nav-container {
+    overflow-y: auto;
+    /* Scroll if content overflows */
     width: 250px;
     /* Fixed width */
     flex-shrink: 0;
