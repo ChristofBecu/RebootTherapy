@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initNavigation(sidebar, toggleNavButton);
 
     // Dynamically build the navigation menu
-    async function buildNavigation() {
+    async function buildNavigation(loadFirstPost = false) {
         const posts = await fetchPostNames();
         
         // Store the sorted posts array (already sorted by date from server)
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updatePostList();
 
         // Optionally, load the first post by default
-        if (posts.length > 0) {
+        if (loadFirstPost && posts.length > 0) {
             loadAndRenderPost(posts[0].name);
         }
     }
@@ -93,5 +93,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Build the navigation dynamically
-    buildNavigation();
+    buildNavigation(true);
+
+    setInterval(() => {
+        buildNavigation(false);
+    }, 60000); // Refresh every 60 seconds on new posts
 });
