@@ -189,25 +189,44 @@ There it is! my boot partition wasn't properly unmounted at some point. I have t
 
 ## Preventing future issues
 
-### Verify /boot is mounted before touching the kernel, by adding a mkinitcpio hook
+### Verify /boot is mounted before touching the kernel, by adding a initcpio hook
 
 ```bash
-nvim /etc/mkinitcpio.d/hooks/check-boot-mount
+nvim /etc/initcpio/hooks/check_boot_mount
 
 #!/bin/bash
-if ! mountpoint -q /boot; then
-  echo "⚠️  /boot not mounted — aborting initramfs build."
-  exit 1
-fi
 
-sudo chmod +x /etc/mkinitcpio.d/hooks/check-boot-mount
+run_hook() {
+ [[ -d /boot/EFI ]] || {
+   echo "⚠️  /boot not mounted — aborting initramfs build."
+   exit 1
+ }
+}
+
+sudo chmod +x /etc/mkinitcpio.d/hooks/check_boot_mount
+```
+
+```bash
+nvim /etc/initcpio/install/check_boot_mount
+
+#!/bin/bash
+
+build() {
+ add_runscript
+}
+
+help() {
+ echo "check_boot_mount: no-op custom hook"
+}
+
+sudo chmod +x /etc/mkinitcpio.d/install/check_boot_mount
 ```
 
 ### Add the hook to the mkinitcpio configuration
 
 ```bash
 nvim /etc/mkinitcpio.conf
-HOOKS=(... check-boot-mount ...)
+HOOKS=(... check_boot_mount ...)
 ```
 
 ### Consider a Journaled Filesystem for /boot
