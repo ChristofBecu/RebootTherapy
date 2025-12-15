@@ -1,6 +1,6 @@
 ---
 date: 2025-12-15T15:00:00
-tags: pdf, cli, linux, automation, productivity
+tags: pdf, cli, linux, automation, productivity, development, projects
 ---
 
 # ✂️📄 PDFTrim: From Tiny Hack to Full-Fledged PDF Assassin
