@@ -63,4 +63,4 @@ For those brave enough to peer into the abyss:
 
 ### TL;DR
 
-PDFTrim: started as a tiny vibe-coded script, now a lean, mean, PDF-processing machine — trims pages, nukes blanks, handles batches, and even reverses PDFs — all without the bloat, leaving you feeling like a slightly unhinged terminal wizard.
+PDFTrim: started as a tiny vibe-coded script, now a lean, mean, PDF-processing machine — trims pages, nukes blanks, handles batches, and even reverses the initial logic — all without the bloat, leaving you feeling like a slightly unhinged terminal wizard.
